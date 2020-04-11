@@ -21,9 +21,6 @@
 import * as THREE from './third-party/three.js/build/three.module.js';
 import { RGBELoader } from './third-party/three.js/examples/jsm/loaders/RGBELoader.js';
 
-const LIGHT_PROBE_INTENSITY = 3;
-const REFLECTION_UPDATE_RATE = 1000; // ms
-
 export class XRLighting extends THREE.Group {
   constructor(renderer) {
     super();
