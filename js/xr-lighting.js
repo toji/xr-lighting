@@ -106,12 +106,21 @@ export class XRLighting extends THREE.Group {
         this._xrSession.requestLightProbe().then((probe) => {
           const gl = this._renderer.getContext();
           this._sessionLightProbe = probe;
-          this._xrWebGLBinding = new XRWebGLBinding(this._xrSession, gl);
-          this._colorBufferFloatExt = gl.getExtension('EXT_color_buffer_float');
 
-          probe.addEventListener('reflectionchange', () => {
-            this.updateReflection();
-          });
+          if ('XRWebGLBinding' in window) {
+            this._xrWebGLBinding = new XRWebGLBinding(this._xrSession, gl);
+            this._colorBufferFloatExt = gl.getExtension('EXT_color_buffer_float');
+
+            probe.addEventListener('reflectionchange', () => {
+              this.updateReflection();
+            });
+          }
+
+          if (!this._xrEnvMap) {
+            const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16);
+            this._xrEnvMap = cubeRenderTarget.texture;
+            this.dispatchEvent({ type: 'envmapchange' });
+          }
 
           // Start monitoring the XR animation frame loop to look for lighting
           // estimation changes.
