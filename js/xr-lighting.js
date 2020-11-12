@@ -103,13 +103,16 @@ export class XRLighting extends THREE.Group {
       if ('requestLightProbe' in this._xrSession) {
         // Indicate that we want to start tracking lighting estimation if it's
         // available.
-        this._xrSession.requestLightProbe().then((probe) => {
+        this._xrSession.requestLightProbe({
+          reflectionFormat: this._xrSession.preferredReflectionFormat
+        }).then((probe) => {
           const gl = this._renderer.getContext();
           this._sessionLightProbe = probe;
 
           if ('XRWebGLBinding' in window) {
             this._xrWebGLBinding = new XRWebGLBinding(this._xrSession, gl);
-            this._colorBufferFloatExt = gl.getExtension('EXT_color_buffer_float');
+            this.srgb_ext = gl.getExtension('EXT_sRGB');
+            this._textureHalfFloatExt = gl.getExtension('OES_texture_half_float');
 
             probe.addEventListener('reflectionchange', () => {
               this.updateReflection();
@@ -137,26 +140,15 @@ export class XRLighting extends THREE.Group {
   }
 
   updateReflection() {
+    if (!this._xrWebGLBinding) return;
+
     const cubeMap = this._xrWebGLBinding.getReflectionCubeMap(this._sessionLightProbe);
     if (!cubeMap) return;
 
-    if (this._colorBufferFloatExt) {
-      const gl = this._renderer.getContext();
-      gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubeMap);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-      gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-    }
-
-    if (!this._xrEnvMap) {
-      const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16);
-      this._xrEnvMap = cubeRenderTarget.texture;
-      this.dispatchEvent({ type: 'envmapchange' });
-    }
-
     const textureProperties = this._renderer.properties.get(this._xrEnvMap);
-    textureProperties.__webglTexture = cubeMap;
-    textureProperties.__webglInit = true;
-    this._xrEnvMap.needsUpdate = true;
+    if (textureProperties) {
+      textureProperties.__webglTexture = cubeMap;
+    }
   }
 
   onXRFrame(time, xrFrame) {
