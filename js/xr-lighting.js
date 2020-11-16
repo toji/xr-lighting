@@ -114,9 +114,13 @@ export class XRLighting extends THREE.Group {
             this.srgb_ext = gl.getExtension('EXT_sRGB');
             this._textureHalfFloatExt = gl.getExtension('OES_texture_half_float');
 
-            probe.addEventListener('reflectionchange', () => {
+            setInterval(() => {
               this.updateReflection();
-            });
+            }, 1000);
+
+            /*probe.addEventListener('reflectionchange', () => {
+              this.updateReflection();
+            });*/
           }
 
           if (!this._xrEnvMap) {
@@ -164,7 +168,7 @@ export class XRLighting extends THREE.Group {
 
           this.remove(this._hemisphereLight);
         }
-        
+
         if (!this._xrDirectionalLight) {
           this._xrDirectionalLight = new THREE.DirectionalLight();
           this.add(this._xrDirectionalLight);
