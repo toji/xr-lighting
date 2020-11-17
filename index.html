@@ -37,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   <body>
     <div style='position: absolute; margin: 1em auto; z-index: 10; text-align: center; width: 100%;'>
-      <a href="intent://www.xrdinosaurs.com/media/models/light-test.glb#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
+      <a href="intent://arvr.google.com/scene-viewer/1.0?file=https://toji.github.io/xr-lighting/media/models/MetalRoughSpheres.glb&mode=ar_only#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;">
         Native Test
       </a>
     </div>
@@ -47,7 +47,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       import { ARButton } from './js/third-party/three.js/examples/jsm/webxr/ARButton.js';
 
       import { XRLighting } from './js/xr-lighting.js';
-      
+
       let container;
       let camera, scene, renderer;
       let controller;
@@ -169,7 +169,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
 
       init();
-      
+
     </script>
   </body>
 </html>
